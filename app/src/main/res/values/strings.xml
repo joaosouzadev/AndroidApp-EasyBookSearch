@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">EasyBookSearch</string>
+
+    <string name="instructions">To search for a book, just type the title in the search box and hit the magnifying glass button. \n\nIt is that easy! :)</string>
 </resources>
