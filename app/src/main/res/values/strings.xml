@@ -2,4 +2,11 @@
     <string name="app_name">EasyBookSearch</string>
 
     <string name="instructions">To search for a book, just type the title in the search box and hit the magnifying glass button. \n\nIt is that easy! :)</string>
+
+    <string name="no_internet">No Internet Connection found. Fix it and try again.</string>
+
+    <string name="search_field_empty">Search field is empty.</string>
+
+    <string name="no_books">No results found for \"%1$s\".</string>
+
 </resources>

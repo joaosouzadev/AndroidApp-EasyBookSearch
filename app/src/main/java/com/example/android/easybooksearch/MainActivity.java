@@ -1,8 +1,12 @@
 package com.example.android.easybooksearch;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,11 +69,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void search(){
+    public void search(){
         if (isConnected()){
+            TextView instructions = (TextView) findViewById(R.id.instructions);
+
             userQuery = searchField.getText().toString();
             if (!userQuery.isEmpty()){
-                // do query
+                instructions.setVisibility(TextView.INVISIBLE);
+                booksAsyncTask task = new booksAsyncTask();
+                task.execute(BOOK_REQUEST_URL);
             }else{
                 Toast.makeText(getApplicationContext(), getString(R.string.search_field_empty), Toast.LENGTH_SHORT).show();
             }
@@ -75,6 +85,50 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), getString(R.string.no_internet), Toast.LENGTH_LONG).show();
         }
     }
+
+    private class booksAsyncTask extends AsyncTask<String, Void, List<Book>>{
+        @Override
+        protected List<Book> doInBackground(String... urls) {
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
+
+            //this call the connection on server in base of preference
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+            //get the URL of the google server
+            Uri baseUri = Uri.parse(urls[0]);
+            //this is used to build the URL with the query parameters
+            Uri.Builder uriBuilder = baseUri.buildUpon();
+            uriBuilder.appendQueryParameter("q", userQuery); //this adds the query in the search box
+            uriBuilder.appendQueryParameter("maxResults", "30"); //this adds the max books listed
+            // Perform the HTTP request for data and process the response.
+            return QueryUtils.fetchData(uriBuilder.toString());
+        }
+
+        @Override
+        protected void onPostExecute(List<Book> books) {
+            if (isConnected()) {
+                // Clear the adapter of previous data
+                mAdapter.clear();
+                // Set empty state text to display "No books found."
+                String message = getString(R.string.no_books, userQuery);
+                mEmptyStateTextView.setText(message);
+                // If there is a valid list of books, it add them to the adapter's data set.
+                if (books != null && !books.isEmpty()) {
+                    mAdapter.addAll(books);
+                }
+            } else {
+                //emptyStateTextView.setText(R.string.no_internet);
+                Toast.makeText(getApplicationContext(), getString(R.string.no_internet), Toast.LENGTH_LONG).show();
+            }
+        }
+
+
+    }
+
+
+    // TODO: e depois fazer QueryUtils
 
     private Boolean isConnected(){
         ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
