@@ -7,7 +7,7 @@
     tools:context="com.example.android.easybooksearch.MainActivity">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/edittext_query"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -24,20 +24,21 @@
         android:contentDescription="Search button"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_alignBottom="@+id/editText"
+        android:layout_alignBottom="@+id/edittext_query"
         android:layout_marginStart="27dp"
-        android:layout_toEndOf="@+id/editText"
+        android:layout_toEndOf="@+id/edittext_query"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/search"
-        android:id="@+id/imageButton" />
+        android:id="@+id/imagebutton_search" />
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/instructions"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/edittext_query"
+        android:layout_marginTop="24dp"
         android:dividerHeight="1dp"
         android:orientation="vertical" />
 
@@ -46,12 +47,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/editText"
+        android:layout_below="@+id/edittext_query"
         android:layout_marginTop="32dp"
         android:padding="40dp"
         android:text="@string/instructions"
         android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textAppearance="?android:textAppearanceMedium"
+        tools:text="@string/no_books" />
 
 </RelativeLayout>
