@@ -64,7 +64,7 @@
         tools:text="@string/no_books" />
 
     <ProgressBar
-        android:id="@+id/loading_indicator"
+        android:id="@+id/loading_circle"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="100dp"
         android:layout_height="100dp"

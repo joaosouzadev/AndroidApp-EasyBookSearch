@@ -1,7 +1,9 @@
 package com.example.android.easybooksearch;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.inputmethodservice.Keyboard;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -10,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -48,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         bookListView.setEmptyView(mEmptyStateTextView);
 
         //Load a circle progress bar as loading bar
-        progressLoader = (ProgressBar) findViewById(R.id.loading_indicator);
+        progressLoader = (ProgressBar) findViewById(R.id.loading_circle);
         progressLoader.setVisibility(View.INVISIBLE);
 
         // Create a new adapter that takes an empty list of books as input
@@ -67,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 search();
+                // hides the soft keyboard when search button is activated
+                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
     }
@@ -82,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 booksAsyncTask task = new booksAsyncTask();
                 task.execute(BOOK_REQUEST_URL);
             }else{
+                progressLoader.setVisibility(View.INVISIBLE);
                 Toast.makeText(getApplicationContext(), getString(R.string.search_field_empty), Toast.LENGTH_SHORT).show();
             }
         } else {
