@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,16 +22,13 @@ import java.util.List;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
-
-
     public static final String LOG_TAG = MainActivity.class.getName();
-
     private static final String BOOK_REQUEST_URL =
             "https://www.googleapis.com/books/v1/volumes";
-
     private ImageButton searchButton = null;
     private EditText searchField = null;
     private String userQuery;
+    private ProgressBar progressLoader;
 
     /** Adapter for the list of earthquakes */
     private BookAdapter mAdapter;
@@ -48,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         bookListView.setEmptyView(mEmptyStateTextView);
+
+        //Load a circle progress bar as loading bar
+        progressLoader = (ProgressBar) findViewById(R.id.loading_indicator);
+        progressLoader.setVisibility(View.INVISIBLE);
 
         // Create a new adapter that takes an empty list of books as input
         mAdapter = new BookAdapter(this, new ArrayList<Book>());
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     public void search(){
         if (isConnected()){
             TextView instructions = (TextView) findViewById(R.id.instructions);
+            progressLoader.setVisibility(View.VISIBLE);
 
             userQuery = searchField.getText().toString();
             if (!userQuery.isEmpty()){
@@ -114,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
                 // Set empty state text to display "No books found."
                 String message = getString(R.string.no_books, userQuery);
                 mEmptyStateTextView.setText(message);
+
+                progressLoader.setVisibility(View.INVISIBLE);
+
                 // If there is a valid list of books, it add them to the adapter's data set.
                 if (books != null && !books.isEmpty()) {
                     mAdapter.addAll(books);
